@@ -44,7 +44,7 @@ let contextSearchCompact = {
 			searchMenuPopup: 'context-search-compact-by-2k1dmg-popup'
 		};
 
-		for(let window in this.windows)
+		for(let window of this.windows)
 			this.initWindow(window, reason);
 		Services.ww.registerNotification(this);
 
@@ -61,7 +61,7 @@ let contextSearchCompact = {
 		if(prefs.has('browser.search.hiddenOneOffs'))
 			prefs.ignore('browser.search.hiddenOneOffs', this);
 
-		for(let window in this.windows)
+		for(let window of this.windows)
 			this.destroyWindow(window, reason);
 		Services.ww.unregisterNotification(this);
 	},
@@ -146,16 +146,18 @@ let contextSearchCompact = {
 	},
 	update: function() {
 		this.updateTimeoutID = null;
-		for(let window in this.windows)
+		for(let window of this.windows)
 			this.updateSearchMenu(window);
 	},
 
 	get windows() {
+		let windows = [];
 		let ws = Services.wm.getEnumerator('navigator:browser');
 		while(ws.hasMoreElements()) {
 			let window = ws.getNext();
-			yield window;
+			windows.push(window);
 		}
+		return windows;
 	},
 	isTargetWindow: function(window) {
 		let loc = window.location.href;
@@ -312,13 +314,15 @@ let contextSearchCompact = {
 		for(let last; last = popup.lastChild;)
 			last.remove();
 
-		for(let mg in this.menugroups(window))
+		for(let mg of this.menugroups(window))
 			popup.appendChild(mg);
 
 		menu.classList[popup.firstChild ? 'remove' : 'add']('popup-is-empty');
 	},
 	menugroups: function(window) {
 		let {document} = window;
+
+		let menugroups = [];
 
 		let pref = prefs.get('browser.search.hiddenOneOffs');
 		let hiddenList = pref ? pref.split(',') : [];
@@ -337,8 +341,9 @@ let contextSearchCompact = {
 				item.engine = engine;
 				mg.appendChild(item);
 			}
-			yield mg;
+			menugroups.push(mg);
 		}
+		return menugroups;
 	},
 
 	SHEET_TYPE: {
