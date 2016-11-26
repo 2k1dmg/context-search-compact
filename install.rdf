@@ -9,6 +9,7 @@
 		<em:description>Context search menu compact.</em:description>
 		<em:type>2</em:type>
 		<em:bootstrap>true</em:bootstrap>
+		<em:multiprocessCompatible>true</em:multiprocessCompatible>
 		<!-- Firefox -->
 		<em:targetApplication>
 			<Description>
